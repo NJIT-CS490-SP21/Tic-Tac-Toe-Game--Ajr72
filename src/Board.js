@@ -3,16 +3,18 @@
 import {Square} from'./Square.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
+import {Login} from './Login.js';
 
 const socket = io(); 
 export  function Board(){
     
     const [board, setBoard] = useState(["","","","","","","","",""]);
     const [counter, setCount] = useState(0);
+    const [isLogin, setLogin] = useState(false);
     
     function Update(index){
         
-        setCount((prevCounter)=>prevCounter+1);
+        
          setBoard(prevList=>{
             if(counter%2==0){
                 const boardCopy = [...prevList];
@@ -20,6 +22,7 @@ export  function Board(){
                 boardCopy[index] = 'X'; 
                 
                 socket.emit('move', {index:index, val:boardCopy[index]});
+                
                 return boardCopy;
                 
             }
@@ -28,14 +31,19 @@ export  function Board(){
                boardCopy[index] = 'O'; 
                
                socket.emit('move', {index:index, val:boardCopy[index]});
+               
                return boardCopy; 
             }
                 
          });
-        
+        setCount((prevCounter)=>prevCounter+1);
             
             
          }
+    function onPressLogin(){
+        setLogin(prevIsLogin=> true)
+    }
+    
 
        useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
@@ -57,7 +65,12 @@ export  function Board(){
   }, []);
      
     return (
-    <div className = "board">
+        
+    <div>
+        
+    {isLogin === true ?
+    
+         (<div className = "board">
         
         <Square i={0}  Update={Update} board={board} />
         <Square i={1}  Update={Update} board={board} />
@@ -68,7 +81,16 @@ export  function Board(){
         <Square i={6}  Update={Update} board={board} />
         <Square i={7}  Update={Update} board={board} />
         <Square i={8}  Update={Update} board={board} />
+    </div>) :
+    
+    (<div> 
+        <Login onPressLogin ={onPressLogin} />
+    <h1>Please Login</h1>
+    </div>)
+    }
+   
     </div>
+    
     );
 }
 
