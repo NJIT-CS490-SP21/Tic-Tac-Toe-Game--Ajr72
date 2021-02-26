@@ -42,7 +42,7 @@ export  function Board(){
     // run the code in the function that is passed in as the second arg
     socket.on('move', (data) => {
       console.log('move played!!!');
-      
+      setCount((prevCounter)=>prevCounter+1);
       setBoard(prevList=>{
            const boardCopy = [...prevList];
            console.log("data",data.val);

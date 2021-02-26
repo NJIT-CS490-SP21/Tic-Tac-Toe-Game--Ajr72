@@ -7,4 +7,3 @@ class Person(db.Model):
 
     def __repr__(self):
         return '<Person %r>' % self.username
-        
