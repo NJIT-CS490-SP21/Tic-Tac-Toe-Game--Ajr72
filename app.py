@@ -13,7 +13,8 @@ socketio = SocketIO(
     json=json,
     manage_session=False
 )
-
+spectators=[]
+players=[]
 @app.route('/', defaults={"filename": "index.html"})
 @app.route('/<path:filename>')
 def index(filename):
@@ -40,16 +41,26 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
 @socketio.on('move')
 def on_move(data): # data is whatever arg you pass in your emit call on client
     print(str(data))
+   
+    # This emits the 'chat' event from the server to all clients except for
+    # the client that emmitted the event that triggered this function
+    socketio.emit('move',  data, broadcast=True, include_self=True)
+@socketio.on('login')
+def on_login(data): # data is whatever arg you pass in your emit call on client
+    print(str(data))
+   
+    
+  
+    
     
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('move',  data, broadcast=True, include_self=False)
-
+    socketio.emit('login',  data, broadcast=True, include_self=False)
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
     
     app,
-    use_reloader=False,
+    debug = True, use_reloader=False,
     host=os.getenv('IP', '0.0.0.0'),
     port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
 )
