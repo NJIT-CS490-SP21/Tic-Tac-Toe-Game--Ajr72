@@ -63,7 +63,9 @@ def on_login(data): # data is whatever arg you pass in your emit call on client
     socketio.emit('login', data, broadcast=True, include_self=False)
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
-
+@socketio.on("replay")
+def on_replay(data):
+ socketio.emit('replay',  data, broadcast=True, include_self=True)   
 socketio.run(
     
     app,
