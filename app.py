@@ -15,7 +15,7 @@ socketio = SocketIO(
 )
 spectators=[]
 players=[]
-users = ["alex","gab", "pole"]
+users = []
 @app.route('/', defaults={"filename": "index.html"})
 @app.route('/<path:filename>')
 def index(filename):
@@ -52,16 +52,15 @@ def on_move(data): # data is whatever arg you pass in your emit call on client
 def on_login(data): # data is whatever arg you pass in your emit call on client
    
    
-    users.append(str(data))
-    if data["id"] == 0 or data["id"] == 1:
-       players.append(data["username"]) 
+    print(str((data)))
+    users.append(data['username'])
+    if(data["id"]==1 or data["id"]==2):
+        players.append(data['username'])
     else:
-        spectators.append(data["username"])
-    
-    print(data["id"])
+        spectators.append(data['username'])
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('login', {"players": players,"spectators":spectators}, broadcast=True, include_self=False)
+    socketio.emit('login', data, broadcast=True, include_self=False)
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 
