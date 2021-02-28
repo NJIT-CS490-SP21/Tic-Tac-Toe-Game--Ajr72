@@ -1,10 +1,8 @@
-
-
 import {Square} from'./Square.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 import {Login} from './Login.js';
-
+import {calculateWinner} from "./Winner.js";
 const socket = io(); 
 export  function Board(){
     
@@ -13,11 +11,13 @@ export  function Board(){
     const [isLogin, setLogin] = useState(false);
     const inputRef = useRef(null);
     const [user,setUser]= useState([]);
-    const [userDict,setDict]=useState([]);
+    const [isPlayr, setIsPlayer] = useState(false);
+    const winner = calculateWinner(board);
+    const [id,setId]= useState(0);
     
     function Update(index){
         
-         setCount((prevCounter)=>prevCounter+1);
+        setCount((prevCounter)=>prevCounter+1);
          setBoard(prevList=>{
             if(counter%2==0){
                 const boardCopy = [...prevList];
@@ -44,7 +44,7 @@ export  function Board(){
     function onPressLogin(){
         
         setLogin(prevIsLogin=> true);
-        
+        setId(prevId=>prevId +1)
        
         var username = inputRef.current.value;
         
@@ -53,17 +53,16 @@ export  function Board(){
         setUser((prevUser)=>{
             const userListCopy = [...prevUser];
             
-            console.log("userListCopy before :",userListCopy);
+            
             userListCopy.push(username);
-            console.log("userListCopy after:",userListCopy);
-            console.log("counter",counter);
+            
            
             return userListCopy;
         });
-        setDict(prevUserDict=>{
-            
-        });
-         socket.emit("login" , {username:username});
+        
+         socket.emit("login" , {username:username,id:id});
+         
+         
     }
          
     
@@ -72,7 +71,7 @@ export  function Board(){
     // run the code in the function that is passed in as the second arg
     socket.on('move', (data) => {
       console.log('move played!!!');
-      setCount((prevCounter)=>prevCounter+1);
+      
       setBoard(prevList=>{
           
            const boardCopy = [...prevList];
@@ -87,16 +86,21 @@ export  function Board(){
       // add it to the list of messages to render it on the UI.
       
     });
-    console.log('User Logged!!!'); 
+    
     socket.on("login",(data)=>{
          
       console.log('User Logged!!!'); 
-      
+        setId(prevId=>{
+            var tempId = prevId;
+            tempId++;
+            return tempId;
+        });
         setUser((prevUser)=>{
            setCount((prevCounter)=>prevCounter+1);
             const userCopy = [...prevUser];
             var user=data.username;
             userCopy.push(user);
+            console.log(data)
             return userCopy;
           });
           return counter;
@@ -125,11 +129,7 @@ export  function Board(){
         <Square i={8}  Update={Update} board={board} />
         
     </div>
-    <div>
-       <ul>
-       <li><h2>{user} </h2></li>
-       </ul>
-    </div>
+    
     </div>
     
     
@@ -147,4 +147,3 @@ export  function Board(){
     
     );
 }
-
