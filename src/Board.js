@@ -30,12 +30,7 @@ export  function Board(){
          setBoard(prevList=>{
             
                 const boardCopy = [...prevList];
-                if(winner){
-                   setStatus(prevStatus=> "The winner is") 
-                }
-                else if(!winner && isFilled){
-                    
-                }
+               
                 if(winner|| boardCopy[index]) return;
                 
               
@@ -53,6 +48,19 @@ export  function Board(){
                 }
                 else{
                     setNextTurn(prevTurn=>"PlayerX");
+                }
+                
+                 if(winner){
+                   setStatus(prevStatus=> "The winner is" + winner); 
+                }
+                else if(!winner && isFilled){
+                    setStatus(prevStatus=> "Game Drawn");
+                }
+                else{
+                    setStatus(prevStatus=>{
+                        const tempStatus = prevStatus;
+                       tempStatus = "It is " + nextTurn +"'s turn."
+                    });
                 }
                     
                     if(userType==="PlayerX" || userType==="PlayerO")
@@ -246,7 +254,7 @@ export  function Board(){
                 </ul>
             </div>
             <div cLass="spectlist">
-                {!winner ? "Match Drawn" : winner}
+                
                 <h2> {winner ? "Winner: " + winner : "Next Player: " + nextTurn}</h2>
                 <h2>Spectators:</h2>
                 
