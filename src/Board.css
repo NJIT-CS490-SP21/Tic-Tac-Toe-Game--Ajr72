@@ -4,9 +4,42 @@
 	display: grid; /* Enables CSS Grid */ 
 	grid-template-columns: repeat(3, 1fr); /* Total horizontal space broken into 3 columns */
   grid-template-rows: repeat(3, 1fr); /* Total vertical space broken into 3 rows */
+  margin:auto;
+  border:solid 2px black;
 }
 
 .box {
-  border: 1px solid black; /* Shows the lines in the CSS grid */
+  border: 2px solid black; /* Shows the lines in the CSS grid */
   
+}
+.move{
+	font-size: 3em;
+	text-align:center;
+	margin-left: 30%;
+	margin-top: 23%;
+	color:red;
+	font-weight:bold;
+	text-shadow: 3px 3px black;
+}
+.login{
+	margin-left:38%;
+	
+}
+.login-box{
+	margin-right:10px;
+	height: 20px;
+	width: 250px;
+	margin-left:-5%;
+}
+.login-button:{
+	
+}
+.spectlist{
+	margin-left:45%;
+}
+.heading{
+	margin-left:15%;
+}
+#playerlist{
+	margin-left:45%;
 }

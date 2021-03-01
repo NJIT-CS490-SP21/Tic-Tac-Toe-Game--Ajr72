@@ -3,7 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
 import {Login} from './Login.js';
 import {calculateWinner} from "./Winner.js";
-import  {Replay} from "./Replay.js"
+import  {Replay} from "./Replay.js";
+import {Spect} from "./Spectators.js";
+import {AreAllBoxesClicked} from "./Winner.js";
 const socket = io();
 export  function Board(){
     
@@ -19,6 +21,8 @@ export  function Board(){
     const [spect,setSpect] = useState([]);
     const [nextTurn,setNextTurn] =useState("PlayerX");
     let winner = calculateWinner(board);
+    const isFill = AreAllBoxesClicked(board);
+    const [status,setStatus] = useState(null);
     const [isClicked, setClicked] = useState(false);
     
     function Update(index, value){
@@ -26,12 +30,20 @@ export  function Board(){
          setBoard(prevList=>{
             
                 const boardCopy = [...prevList];
-               
+                if(winner){
+                   setStatus(prevStatus=> "The winner is") 
+                }
                 if(winner|| boardCopy[index]) return;
+                
               
                 value = move;
-
-                boardCopy[index] = move;
+               
+                
+                    boardCopy[index] = move;
+                
+                    
+                
+                
                 if(boardCopy[index]==="X")
                 {
                     setNextTurn(prevTurn=>"PlayerO");
@@ -41,8 +53,9 @@ export  function Board(){
                 }
                     
                     if(userType==="PlayerX" || userType==="PlayerO")
-                          
+                            
                             socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
+                    
                     
                 return boardCopy;
          });
@@ -94,13 +107,8 @@ export  function Board(){
         }
         else{
             setType(prevType=>"Spectator");
-            
         }
-        
-        
          socket.emit("login" , {username:username,id:id,userType:userType});
-         
-         
     }
   
     function onReplay(){
@@ -116,9 +124,8 @@ export  function Board(){
         socket.emit("replay", {board:board,winner:winner,nextTurn:nextTurn});
       
     }
-         
     
-     useEffect(() => {
+    useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
     // run the code in the function that is passed in as the second arg
     socket.on('move', (data) => {
@@ -140,12 +147,6 @@ export  function Board(){
            return boardCopy;
       });
       
-     
-         
-           
-      
-      // If the server sends a message (on behalf of another client), then we
-      // add it to the list of messages to render it on the UI.
       
     });
     
@@ -168,7 +169,7 @@ export  function Board(){
             
             return userCopy;
           });
-          if(id < 3){
+          if(data.id < 3){
             
                 setPlayer(prevPlayer=>{
                 const tempPlayer = [...prevPlayer];
@@ -180,19 +181,16 @@ export  function Board(){
              setSpect(prevSpect=>{
                  const tempSpect= [...prevSpect];
                  tempSpect.push(data.username);
+                 console.log("spect",tempSpect);
                  return tempSpect;
              }) ;
           }
           
           if(data.userType==="playerX"){
              setMove(prevMove=>"X");
-             
-             
           }
           else if(data.userType ==="playerO"){
               setMove(prevMove=>"O");
-              
-              
           }
           
           
@@ -217,7 +215,7 @@ export  function Board(){
     return (
         
     <div>
-     <h1>Welcome to the Pro Tic Tac Toe International Chmapionship <span> ❌  v/s  ⭕</span> </h1>
+     <h1 cLass="heading">Welcome to the Pro Tic Tac Toe International Chmapionship <span> ❌  v/s  ⭕</span> </h1>
     {isLogin === true ?
         
         
@@ -237,20 +235,19 @@ export  function Board(){
                 
             </div>
             
-            <div>
+            <div id="playerlist">
                 <h2>Players:</h2>
-                <li>PlayerX: {player[0]}</li>
-                <li>PlayerO: {player[1]}</li>
-            </div>
-            <div>
-                 {winner ? "Winner: " + winner : "Next Player: " + nextTurn}
-                <h2>Spectators:</h2>
                 <ul>
-                {spect.map((item)=>(
-                    <li> {item}</li>
-                ))}
-               </ul> 
-               
+                <h3><li>Player❌: {player[0]}</li></h3>
+                <h3><li>Player⭕: {player[1]}</li></h3>
+                </ul>
+            </div>
+            <div cLass="spectlist">
+                {!winner ? "Match Drawn" : winner}
+                <h2> {winner ? "Winner: " + winner : "Next Player: " + nextTurn}</h2>
+                <h2>Spectators:</h2>
+                
+                <Spect spect={spect} />
             </div>
            
             {winner &&
@@ -262,10 +259,11 @@ export  function Board(){
    
     ) :
     
-    (<div> 
+    (<div cLass="login"> 
+        <h1>Please Login</h1>
         <Login inputRef = {inputRef}onPressLogin ={onPressLogin} />
         
-    <h1>Please Login</h1>
+    
     </div>)
     }
    
@@ -273,3 +271,4 @@ export  function Board(){
     
     );
 }
+

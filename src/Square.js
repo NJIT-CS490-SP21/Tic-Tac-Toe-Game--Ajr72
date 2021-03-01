@@ -1,5 +1,5 @@
 
-
+import "./Board.css";
 export function Square(props){
     
      
@@ -7,7 +7,7 @@ export function Square(props){
        
     <div  onClick={()=> props.Update(props.i,props.move)} className="box">
         
-        { props.board[props.i] }
+       <span className="move" >{ props.board[props.i] }</span>
     </div>
     );
   
