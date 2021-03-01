@@ -21,7 +21,7 @@ export  function Board(){
     const [spect,setSpect] = useState([]);
     const [nextTurn,setNextTurn] =useState("PlayerX");
     let winner = calculateWinner(board);
-    const isFill = AreAllBoxesClicked(board);
+    const isFilled = AreAllBoxesClicked(board);
     const [status,setStatus] = useState(null);
     const [isClicked, setClicked] = useState(false);
     
@@ -32,6 +32,9 @@ export  function Board(){
                 const boardCopy = [...prevList];
                 if(winner){
                    setStatus(prevStatus=> "The winner is") 
+                }
+                else if(!winner && isFilled){
+                    
                 }
                 if(winner|| boardCopy[index]) return;
                 
