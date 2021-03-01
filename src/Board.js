@@ -5,7 +5,7 @@ import {Login} from './Login.js';
 import {calculateWinner} from "./Winner.js";
 import  {Replay} from "./Replay.js";
 import {Spect} from "./Spectators.js";
-import {AreAllBoxesClicked} from "./Winner.js";
+import {areAllBoxesClicked} from "./Winner.js";
 const socket = io();
 export  function Board(){
     
@@ -21,7 +21,7 @@ export  function Board(){
     const [spect,setSpect] = useState([]);
     const [nextTurn,setNextTurn] =useState("PlayerX");
     let winner = calculateWinner(board);
-    const isFilled = AreAllBoxesClicked(board);
+    const isFilled = areAllBoxesClicked(board);
     const [status,setStatus] = useState(null);
     const [isClicked, setClicked] = useState(false);
     
