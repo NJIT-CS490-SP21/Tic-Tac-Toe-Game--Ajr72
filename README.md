@@ -17,11 +17,11 @@
 *Don't do the Heroku step for assignments, you only need to deploy for Project 2*
 1. Create a Heroku app: `heroku create --buildpack heroku/python`
 2. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/nodejs`
-3. Push to Heroku: `git push heroku main`
+3. Push to Heroku: `git push heroku miestne_1:main`
 ## How to clone this repository
 *Option one: clone this directory using the clone button.
 *Option two: Use the following command in the terminal to clone:
-..* git clone git@github.com:NJIT-CS490-SP21/project2-ajr72.git
+..* git clone `git@github.com:NJIT-CS490-SP21/project2-ajr72.git`
 ## Known Problems.
 1. When a tile is already clicked is should not be allowed to click again but in my app it is still allowing to click again. If i had more time then I would try different solution to solve this problem.
 2. UI is not good. If i had more time I would definetely make a nicer and clean UI.
