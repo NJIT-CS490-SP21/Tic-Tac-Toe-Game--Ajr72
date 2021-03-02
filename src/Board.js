@@ -5,7 +5,7 @@ import {Login} from './Login.js';
 import {calculateWinner} from "./Winner.js";
 import  {Replay} from "./Replay.js";
 import {Spect} from "./Spectators.js";
-import {areAllBoxesClicked} from "./Winner.js";
+
 const socket = io();
 export  function Board(){
     
@@ -13,7 +13,6 @@ export  function Board(){
     const [isLogin, setLogin] = useState(false);
     const inputRef = useRef(null);
     const [user,setUser]= useState([]);
-   
     const [id,setId]= useState(1);
     const [userType,setType] = useState();
     const [move,setMove] = useState(null);
@@ -21,10 +20,7 @@ export  function Board(){
     const [spect,setSpect] = useState([]);
     const [nextTurn,setNextTurn] =useState("PlayerX");
     let winner = calculateWinner(board);
-    const isFilled = areAllBoxesClicked(board);
-    const [status,setStatus] = useState(null);
-    const [isClicked, setClicked] = useState(false);
-    
+
     function Update(index, value){
        
          setBoard(prevList=>{
@@ -33,15 +29,11 @@ export  function Board(){
                
                 if(winner|| boardCopy[index]) return;
                 
-              
+                
                 value = move;
                
                 
-                    boardCopy[index] = move;
-                
-                    
-                
-                
+                 boardCopy[index] = move;
                 if(boardCopy[index]==="X")
                 {
                     setNextTurn(prevTurn=>"PlayerO");
@@ -49,31 +41,18 @@ export  function Board(){
                 else{
                     setNextTurn(prevTurn=>"PlayerX");
                 }
-                
-                 if(winner){
-                   setStatus(prevStatus=> "The winner is" + winner); 
-                }
-                else if(!winner && isFilled){
-                    setStatus(prevStatus=> "Game Drawn");
-                }
-                else{
-                    setStatus(prevStatus=>{
-                        const tempStatus = prevStatus;
-                       tempStatus = "It is " + nextTurn +"'s turn."
-                    });
-                }
-                    
-                    if(userType==="PlayerX" || userType==="PlayerO")
+    
+                if(userType==="PlayerX" || userType==="PlayerO")
                             
-                            socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
+                    socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
                     
                     
                 return boardCopy;
          });
  
          }
+         
     function onPressLogin(){
-        
         setLogin(prevIsLogin=> true);
         setId(prevId=>prevId +1);
         console.log("onpressID",id);
@@ -82,7 +61,7 @@ export  function Board(){
         username=inputRef.current.value;
         if(username == ""){
         alert("Enter a valid name.");
-        return;
+        window.location.reload();
     }
         setUser((prevUser)=>{
             const userListCopy = [...prevUser];
@@ -121,15 +100,14 @@ export  function Board(){
         }
          socket.emit("login" , {username:username,id:id,userType:userType});
     }
-  
     function onReplay(){
         setBoard(prevBoard=>{
             let boardCopy = [...prevBoard];
-            boardCopy = [Array(9).fill(null)];
+            boardCopy = ["","","","","","","","",""];
              
             return boardCopy;
         });
-        winner=null;
+        
         setNextTurn(prevTurn=>"PlayerX");
         console.log("relayed",board);
         socket.emit("replay", {board:board,winner:winner,nextTurn:nextTurn});
@@ -163,7 +141,7 @@ export  function Board(){
     
     
     socket.on("login",(data)=>{
-       console.log("socketid",socket.id); 
+      console.log("socketid",socket.id); 
       console.log('User Logged!!!'); 
       console.log(data);
         setId(prevId=>{
@@ -209,7 +187,7 @@ export  function Board(){
       socket.on("replay",(data)=>{
            setBoard(prevBoard=>{
             let boardCopy = [...prevBoard];
-            boardCopy = [Array(9).fill(null)];
+            boardCopy = ["","","","","","","","",""];
             return boardCopy;
         });
         setNextTurn(prevTurn=>"PlayerX");
@@ -217,12 +195,11 @@ export  function Board(){
           
       });
       
-     
-      
   }, []);
   console.log(user);
   console.log(player);
-    
+    const is_board_full = board.every(element=>element!="");
+    console.log(is_board_full);
     return (
         
     <div>
@@ -254,18 +231,21 @@ export  function Board(){
                 </ul>
             </div>
             <div cLass="spectlist">
+                {( (winner ==="PlayerX" || winner ==="PlayerO") && (userType==="PlayerX" || userType === "PlayerO")||
+                 ( ( winner!= "PlayerX" || winner != "playerO" ) &&  userType==="PlayerX" || userType === "PlayerO") && is_board_full) ? 
+                    <div>
+                    <Replay onReplay={onReplay} />
+                    </div>:("")
+                }
+                { (winner!= "PlayerX" || winner != "playerO" )&& is_board_full ? 
+                    <h2> Match Drawn"</h2>: <h2>{(winner ? "Winner: " + winner : "Next Player: " + nextTurn)} </h2>
+                }
                 
-                <h2> {winner ? "Winner: " + winner : "Next Player: " + nextTurn}</h2>
                 <h2>Spectators:</h2>
                 
                 <Spect spect={spect} />
             </div>
-           
-            {winner &&
-            
-                <Replay onReplay={onReplay} />
-            }
-           
+   
         </div>
    
     ) :

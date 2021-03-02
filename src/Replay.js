@@ -1,8 +1,8 @@
 export function  Replay(props){
    
    return(
-       <div className = "login">
+       <div >
             
-            <button  onClick={()=>props.onReplay()}>Replay</button>
+            <button  className = "replay" onClick={()=>props.onReplay()}>Play Again</button>
         </div>) 
 }
