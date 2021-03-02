@@ -1,4 +1,4 @@
-# Flask and create-react-app
+# Tic Tac Toe Game App project 2
 
 ## Requirements
 1. `npm install`
