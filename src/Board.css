@@ -1,4 +1,5 @@
 body{
+	margin:0;
 	background-image: url("tic-tac-toe.png");
 }
 .board {
@@ -11,43 +12,100 @@ body{
   border-top:dashed 4px #ef8d32;
   border-left:dashed 4px #ef8d32;
   background:#f4c983;
+  margin-top: 45px;
+  
+ 
+   
+  
 }
 
 .box {
   border-right:dashed 4px #ef8d32; /* Shows the lines in the CSS grid */
-   border-bottom:dashed 4px #ef8d32
+  border-bottom:dashed 4px #ef8d32
+}
+
+.spectlist{
+
+	font-weight:bold;
+	
+	width: 350px; /* Total horizontal dimensions */
+	height: 250px; /* Total vertical dimensions */
+	background:#b4aee8;
+	float:right;
+	margin-right:10%;
+	margin-top:10px; 
+	margin-bottom:50px;
+	border:solid 2px black;
+}
+.playerlist{
+
+	
+	width: 350px; /* Total horizontal dimensions */
+	height: 250px; /* Total vertical dimensions */
+	background:#b4aee8;
+	float:left;
+  	margin-left:10%;
+  	margin-bottom:50px;
+  	margin-top:10px;
+  	border:solid 2px black;
+   
+}
+.leaderboard{
+	width: 350px; /* Total horizontal dimensions */
+	height: 250px; /* Total vertical dimensions */
+	background:#b4aee8;
+	float:left;
+  	margin-left:5%;
+  	margin-bottom:40px;
+  	margin-top:10px;
+  	border:solid 2px black;
 }
 .move{
 	font-size: 4.4em;
 	margin-top: 40%;
 	margin-left: 35%;
-
 	color:red;
 	font-weight:bold;
 	text-shadow: 5px 5px 10px #111d5e;
 }
 .login{
-	margin-left:38%;
+	margin-left:30%;
+	width:35%;
+	height:250px;
+	background:#b4aee8;
+	opacity:0.7;
+	position:absolute;
+	margin-top:30px;
+}
+.login-button{
+	margin-left:43%;
+	margin-top: 20px;
 	
 }
 .login-box{
-	margin-right:10px;
-	height: 20px;
+	
+	height: 30px;
 	width: 250px;
-	margin-left:-5%;
+	margin-left:30%;
+	border-radius:15px;
+	text-align:center;
+	box-shadow:5px 5px ;
 }
 
-.spectlist{
-	margin-left:45%;
-	font-weight:bold;
-}
 .heading{
-	margin-left:15%;
+
+	width:80%;
+	height:70px;
+	background-color:#93329e;
+	text-align: center;
+	margin-left:10%;
+	border-radius:15px;
 }
-#playerlist{
-	margin-left:45%;
+h1{
+	padding:3px;
 }
-.replay {
+
+button {
 	box-shadow:inset 0px 1px 0px 0px #ffffff;
 	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
 	background-color:#ffffff;
@@ -62,17 +120,51 @@ body{
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
+
 }
-.replay:hover {
+button:hover {
 	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
 	background-color:#f6f6f6;
+	box-shadow:5px 5px 2px;
 }
-.replay:active {
+button:active {
 	position:relative;
 	top:1px;
 }
 .win{
-	background:#ffe3fe;
+	background:#b4aee8;
 	
 	
+}
+
+.please{
+	margin-left:35%;
+	font-weight:bold;
+}
+
+.leader-button{
+	margin-left:25%;
+	margin-top:10px;
+}
+div.spectlist
+{
+   overflow-y:scroll;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }

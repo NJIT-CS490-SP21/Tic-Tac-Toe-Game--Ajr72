@@ -6,6 +6,7 @@ import {calculateWinner} from "./Winner.js";
 import  {Replay} from "./Replay.js";
 import {Spect} from "./Spectators.js";
 import{winningTiles} from "./Winner.js";
+import {Leaderboard} from "./Leaderboard.js"
 
 const socket = io();
 export  function Board(){
@@ -22,6 +23,7 @@ export  function Board(){
     const [nextTurn,setNextTurn] =useState("PlayerX");
     let winner = calculateWinner(board);
     let tiles = winningTiles(board);
+    const [leader,setLeader] =useState(false);
     
     function Update(index, value){
         
@@ -94,6 +96,16 @@ export  function Board(){
         console.log("relayed",board);
         socket.emit("replay", {board:board,winner:winner,nextTurn:nextTurn});
       
+    }
+    
+    function onPressLeader(){
+        if(leader===false){
+            setLeader(prevLeader=>true);
+        }
+        else{
+            setLeader(prevLeader=>false);
+        }
+        
     }
     
     useEffect(() => {
@@ -210,16 +222,17 @@ export  function Board(){
     
     return (
         
-    <div>
-     <h1 cLass="heading">Welcome to the Pro Tic Tac Toe International Chmapionship <span> ❌  v/s  ⭕</span> </h1>
+    <div class="conatiner">
+     <div class="heading"><h1 >Welcome to the Pro Tic Tac Toe International Chmapionship <span> ❌  v/s  ⭕</span> </h1></div>
 
   
     {isLogin === true?
         
        
          ( 
-             <div>
-                 <div className = "board">
+         <div>
+             <div class="conatiner">
+                 <div class = "board">
                 
                 <Square id="0" i={0}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
                 <Square id="1" i={1}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
@@ -233,15 +246,13 @@ export  function Board(){
                 
             </div>
             
-            <div id="playerlist">
+            <div class="playerlist">
                 <h2>Players:</h2>
                 <ul>
                 <h3><li>Player❌: {player[0]}</li></h3>
                 <h3><li>Player⭕: {player[1]}</li></h3>
-                </ul>
-            </div>
-            <div cLass="spectlist">
-                {( (winner ==="PlayerX" || winner ==="PlayerO") && (userType==="PlayerX" || userType === "PlayerO")||
+                        <div class="info">
+            {( (winner ==="PlayerX" || winner ==="PlayerO") && (userType==="PlayerX" || userType === "PlayerO")||
                  ( ( winner!= "PlayerX" || winner != "playerO" ) &&  userType==="PlayerX" || userType === "PlayerO") && is_board_full) ? 
                     <div>
                    
@@ -249,24 +260,29 @@ export  function Board(){
                     </div>:("")
                 }
                 { (winner!= "PlayerX" || winner != "playerO" )&& is_board_full ? 
-                    <h2> Match Drawn"</h2>: <h2>{(winner ? "Winner: " + winner : "Next Player: " + nextTurn)} </h2>
+                    <h2> Match Drawn</h2>: <h2>{(winner ? "Winner: " + winner : "Next Player: " + nextTurn)} </h2>
                 }
-               
-                    
-                
+            </div>
+                </ul>
+            </div>
+            <Leaderboard  onPressLeader={ onPressLeader} leader={leader} />
+            <div cLass="spectlist">
                 
                 <h2>Spectators:</h2>
                 
                  <Spect spect={spect} />
+                 
             </div>
             
         </div>
+
+     </div>
         
    
     ) :
     
     (<div cLass="login"> 
-        <h1>Please Login</h1>
+        <h1 class="please">Please Login</h1>
         <Login inputRef = {inputRef}onPressLogin ={onPressLogin} />
         
     
