@@ -244,7 +244,7 @@ export  function Board(){
                 {( (winner ==="PlayerX" || winner ==="PlayerO") && (userType==="PlayerX" || userType === "PlayerO")||
                  ( ( winner!= "PlayerX" || winner != "playerO" ) &&  userType==="PlayerX" || userType === "PlayerO") && is_board_full) ? 
                     <div>
-                    <h2>{tiles}</h2>
+                   
                     <Replay onReplay={onReplay} />
                     </div>:("")
                 }
