@@ -6,6 +6,7 @@ export function Spect(props){
                   <li> {item}</li>
                 ))}
                </ul> 
+        
                
         );
 }

@@ -1,25 +1,30 @@
+body{
+	background-image: url("tic-tac-toe.png");
+}
 .board {
-	width: 300px; /* Total horizontal dimensions */
-	height: 300px; /* Total vertical dimensions */
+	width: 350px; /* Total horizontal dimensions */
+	height: 350px; /* Total vertical dimensions */
 	display: grid; /* Enables CSS Grid */ 
 	grid-template-columns: repeat(3, 1fr); /* Total horizontal space broken into 3 columns */
   grid-template-rows: repeat(3, 1fr); /* Total vertical space broken into 3 rows */
   margin:auto;
-  border:solid 2px black;
+  border-top:dashed 4px #ef8d32;
+  border-left:dashed 4px #ef8d32;
+  background:#f4c983;
 }
 
 .box {
-  border: 2px solid black; /* Shows the lines in the CSS grid */
-  
+  border-right:dashed 4px #ef8d32; /* Shows the lines in the CSS grid */
+   border-bottom:dashed 4px #ef8d32
 }
 .move{
-	font-size: 3em;
-	text-align:center;
-	margin-left: 30%;
-	margin-top: 23%;
+	font-size: 4.4em;
+	margin-top: 40%;
+	margin-left: 35%;
+
 	color:red;
 	font-weight:bold;
-	text-shadow: 3px 3px black;
+	text-shadow: 5px 5px 10px #111d5e;
 }
 .login{
 	margin-left:38%;
@@ -31,9 +36,7 @@
 	width: 250px;
 	margin-left:-5%;
 }
-.login-button:{
-	
-}
+
 .spectlist{
 	margin-left:45%;
 	font-weight:bold;
@@ -67,4 +70,9 @@
 .replay:active {
 	position:relative;
 	top:1px;
+}
+.win{
+	background:#ffe3fe;
+	
+	
 }
