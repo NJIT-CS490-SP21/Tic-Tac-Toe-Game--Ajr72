@@ -5,7 +5,7 @@ export function Square(props){
     
    if(props.winner ==="PlayerX" || props.winner ==="PlayerO"){
 
-                if(props.i == props.tiles[0]||props.i == props.tiles[1]|| props.i == props.tiles[2]){
+                if(props.i === props.tiles[0]||props.i === props.tiles[1]|| props.i === props.tiles[2]){
                    
                    return (
                         <div  onClick={()=> props.Update(props.i,props.move,props.winner)} className="box win">

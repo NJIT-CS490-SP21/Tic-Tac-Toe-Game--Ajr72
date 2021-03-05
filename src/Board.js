@@ -6,11 +6,29 @@ import {calculateWinner} from "./Winner.js";
 import  {Replay} from "./Replay.js";
 import {Spect} from "./Spectators.js";
 import{winningTiles} from "./Winner.js";
-import {Leaderboard} from "./Leaderboard.js"
+import {Leaderboard} from "./Leaderboard.js";
+import UIfx from 'uifx';
+import mp3File from './audios/xsound.wav';
+import mp3File2 from './audios/osound.wav';
+
+const xsound = new UIfx(
+  mp3File,
+  {
+    volume: 1.0// number between 0.0 ~ 1.0
+    
+  }
+);
+const osound = new UIfx(
+  mp3File2,
+  {
+    volume: 1.0// number between 0.0 ~ 1.0
+    
+  }
+);
 
 const socket = io();
 export  function Board(){
-    
+   
     const [board, setBoard] = useState(["","","","","","","","",""]);
     const [isLogin, setLogin] = useState(false);
     const inputRef = useRef(null);
@@ -28,7 +46,7 @@ export  function Board(){
     function Update(index, value){
         
        if(!winner ){
-          if(board[index]==""){
+          if(board[index]===""){
          setBoard(prevList=>{
             
                 const boardCopy = [...prevList];
@@ -37,11 +55,11 @@ export  function Board(){
                  boardCopy[index] = move;
                  
                 if(boardCopy[index]==="X")
-                {  
+                {    xsound.play();
                     setNextTurn(prevTurn=>"PlayerO");
                 }
                 else{
-                    
+                     osound.play();
                     setNextTurn(prevTurn=>"PlayerX");
                 }
     
@@ -70,7 +88,7 @@ export  function Board(){
         var username = inputRef.current.value;
         
         username=inputRef.current.value;
-        if(username == ""){
+        if(username === ""){
         alert("Enter a valid name.");
         window.location.reload();
     }
@@ -208,7 +226,7 @@ export  function Board(){
             setMove(prevMove=>"X");
             
         }
-        else if(id==2){
+        else if(id===2){
             setType(prevType=>"PlayerO");
             setMove(prevMove=>"O");
             
@@ -285,7 +303,6 @@ export  function Board(){
         <h1 class="please">Please Login</h1>
         <Login inputRef = {inputRef}onPressLogin ={onPressLogin} />
         
-    
     </div>)
     }
    
