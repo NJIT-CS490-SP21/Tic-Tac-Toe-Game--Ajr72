@@ -14,14 +14,14 @@ import mp3File2 from './audios/osound.wav';
 const xsound = new UIfx(
   mp3File,
   {
-    volume: 1.0// number between 0.0 ~ 1.0
+    volume: 0.1// number between 0.0 ~ 1.0
     
   }
 );
 const osound = new UIfx(
   mp3File2,
   {
-    volume: 1.0// number between 0.0 ~ 1.0
+    volume: 0.1// number between 0.0 ~ 1.0
     
   }
 );
@@ -74,24 +74,21 @@ export  function Board(){
         
        }
        
-           
-              
-           
-       
- 
          }
          
     function onPressLogin(){
+        
+        if(inputRef === null){
+        alert("Enter a valid username.");
+        
+    }
+        if(inputRef!=null){
         setLogin(prevIsLogin=> true);
         setId(prevId=>prevId +1);
-        console.log("onpressID",id);
         var username = inputRef.current.value;
         
         username=inputRef.current.value;
-        if(username === ""){
-        alert("Enter a valid name.");
-        window.location.reload();
-    }
+     
         setUser((prevUser)=>{
             const userListCopy = [...prevUser];
             userListCopy.push(username);
@@ -102,6 +99,7 @@ export  function Board(){
         setUserType(id);
         
          socket.emit("login" , {username:username,id:id,userType:userType});
+    }
     }
     function onReplay(){
         setBoard(prevBoard=>{
@@ -241,7 +239,7 @@ export  function Board(){
     return (
         
     <div class="conatiner">
-     <div class="heading"><h1 >Welcome to the Pro Tic Tac Toe International Chmapionship <span> ❌  v/s  ⭕</span> </h1></div>
+     <div class="heading"><h1 >Welcome to the Pro Tic Tac Toe International Championship <span> ❌  v/s  ⭕</span> </h1></div>
 
   
     {isLogin === true?
