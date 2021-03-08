@@ -47,7 +47,7 @@ export  function Board(){
     let winner = calculateWinner(board); //winner of the game
     const [name,setName] =useState(null);//set the name of current user of the current browser.
     let tiles = winningTiles(board);//checking which tiles were in the winning state.
-    const [count,setCount]=useState(0);
+
  
  //a functions when a player plays a move
     function Update(index, value){
@@ -63,6 +63,8 @@ export  function Board(){
                 if(winner||boardCopy[index])return; // return when there is a winner or there is someting on the tile.
                 value = move;
                 boardCopy[index] = value;
+                const future_winner = calculateWinner(boardCopy);
+                 
                  
                 if(boardCopy[index]==="X") //if playerX player setting next turn to plyerO and adding sound effect 
                 {    xsound.play();
@@ -77,7 +79,11 @@ export  function Board(){
                             
                     socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
                     
-                    
+                if(future_winner){
+                
+                        socket.emit("winner",{winner:future_winner,players:player,username:name,userType:userType});
+                   
+                }   
                 return boardCopy;
          });
               }
@@ -138,13 +144,7 @@ export  function Board(){
         }
         
     }
-    //function when user wants to update the leaderboard when the game ended
-    function onUpdateLeader(){
-         if(winner){
-             socket.emit("winner",{winner:winner,username:name,userType:userType});
-        }  
-    }
-   
+  
     useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
     // run the code in the function that is passed in as the second arg
@@ -305,7 +305,7 @@ export  function Board(){
                     <div>
                     
                     <Replay onReplay={onReplay} />
-                    <UpdateLeader onUpdateLeader={onUpdateLeader} />
+                   
                     </div>:("")
                 }
                 { (winner!= "PlayerX" || winner != "playerO" )&& is_board_full ? 

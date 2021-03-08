@@ -108,47 +108,33 @@ def on_winner(data):
     """ when recieving winner event"""
     print(data)
     print("userType",data["userType"],request.sid)
+    player=data["players"]
+    playerX= db.session.query(models.Players).filter_by(username=data["players"][0]).first()
+    playerO= db.session.query(models.Players).filter_by(username=data["players"][1]).first()
+        
     leaderboard ={}#empty dictionaryfor leaderboard
-    if data["userType"]=="PlayerX": #if Player is PlayyerX
-        user = db.session.query(models.Players).filter_by(username=data["username"]).first()#player in the databse with the username
-        print(user,user.username,user.score)
+
         
-       # print(user,"before score",user.score)
-        if data['winner']==data["userType"]:# if player is the winner
-          user.score=user.score+1#add +1 to the score
-          db.session.commit()
-          #print("winner",leaderboard[user.username])
-          #print(user, "after score", user.score)
-        else:
-          user.score=user.score-1 #IF NOT WINNER THAN ADD -1 TO THE SCORE
-          db.session.commit()
-          #print("losser",leaderboard[user.username])
-          #print(user, "after score", user.score)
-        desc_ordered_list = models.Players.query.order_by(desc(models.Players.score)).all()#list of user in descending order based on the score
-        for user in desc_ordered_list: #adding username as a key and score as a value to the leaderboard dictionary
-            leaderboard[user.username] = user.score
-        leaderboard=json.dumps(leaderboard,sort_keys=False)
+  
+    if  playerX.username == data["username"]:
+        playerX.score+=1
+        db.session.commit()
+    else:
+        playerX.score-=1
+        db.session.commit()
+    if playerO.username == data["username"]:
+        playerO.score+=1
+        db.session.commit()
+    else:
+        playerO.score-=1
+        db.session.commit()
+  
+    desc_ordered_list = models.Players.query.order_by(desc(models.Players.score)).all()#list of user in descending order based on the score
+    for user in desc_ordered_list: #adding username as a key and score as a value to the leaderboard dictionary
+        leaderboard[user.username] = user.score
+    leaderboard=json.dumps(leaderboard,sort_keys=False)
     
-    elif  data["userType"]=="PlayerO": #if player is PlayerO
-        user = db.session.query(models.Players).filter_by(username=data["username"]).first()
-        print(user,user.username,user.score)
-        
-       # print(user,"before score",user.score)
-        if data['winner']==data["userType"]:
-          user.score=user.score+1
-          db.session.commit()
-          #print("winner",leaderboard[user.username])
-          #print(user, "after score", user.score)
-        else:
-          user.score=user.score-1
-          db.session.commit()
-          #print("losser",leaderboard[user.username])
-          #print(user, "after score", user.score)
-        desc_ordered_list = models.Players.query.order_by(desc(models.Players.score)).all()
-        for user in desc_ordered_list:
-            leaderboard[user.username] = user.score
-        leaderboard=json.dumps(leaderboard,sort_keys=False)
-    
+   
          
     socketio.emit('winner',{"winner":data["winner"],"username": data["username"],"userType":data["userType"],"leaderboard":leaderboard},broadcast=True, include_self=True)            
 
