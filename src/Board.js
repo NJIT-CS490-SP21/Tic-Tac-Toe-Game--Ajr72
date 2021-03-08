@@ -1,3 +1,4 @@
+//importing components and library
 import {Square} from'./Square.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
@@ -8,10 +9,11 @@ import {Spect} from "./Spectators.js";
 import{winningTiles} from "./Winner.js";
 import {Leaderboard} from "./Leaderboard.js";
 import {UpdateLeader} from "./UpdateLeader.js";
-import UIfx from 'uifx';
-import mp3File from './audios/xsound.wav';
-import mp3File2 from './audios/osound.wav';
+import UIfx from 'uifx'; //library to add sound
+import mp3File from './audios/xsound.wav';//sound when playerX plays the move
+import mp3File2 from './audios/osound.wav';//sound when PlayerO plays the move
 
+//setting sounds for each player
 const xsound = new UIfx(
   mp3File,
   {
@@ -27,49 +29,51 @@ const osound = new UIfx(
   }
 );
 
-const socket = io();
+const socket = io(); //socket for client
 export  function Board(){
    
-    const [board, setBoard] = useState(["","","","","","","","",""]);
-    const [isLogin, setLogin] = useState(false);
-    const inputRef = useRef(null);
-    const [user,setUser]= useState([]);
-    const [id,setId]= useState(1);
-    const [userType,setType] = useState(null);
-    const [move,setMove] = useState(null);
-    const [player,setPlayer]= useState([]);
-    const [spect,setSpect] = useState([]);
-    const [nextTurn,setNextTurn] =useState("PlayerX");
-    const [leader,setLeader] =useState(false);
-    const [leaderBoard,setLeaderBoard] = useState({});
-    let winner = calculateWinner(board);
-    const [isWinner,setIsWinner] = useState(false);
-    const [name,setName] =useState(null);
-    let tiles = winningTiles(board);
-    let count = 0;
+    //initializing different states
+    const [board, setBoard] = useState(["","","","","","","","",""]); //initial board
+    const [isLogin, setLogin] = useState(false);//state to check if the user is logged in or not
+    const inputRef = useRef(null);//state for username
+    const [id,setId]= useState(1);//counter for users
+    const [userType,setType] = useState(null);//type of user playerX or playerO or spectators
+    const [move,setMove] = useState(null);//deciding if to put X or O on the board based on current user.
+    const [player,setPlayer]= useState([]);//array for players only
+    const [spect,setSpect] = useState([]);// array for spectators only
+    const [nextTurn,setNextTurn] =useState("PlayerX");//state for deciding which player plays nect move
+    const [leader,setLeader] =useState(false);//state to check if user has clicked on 'see leaderboard' button.
+    const [leaderBoard,setLeaderBoard] = useState({});//state for leaderboard with the username and score.
+    let winner = calculateWinner(board); //winner of the game
+    const [name,setName] =useState(null);//set the name of current user of the current browser.
+    let tiles = winningTiles(board);//checking which tiles were in the winning state.
+    const [count,setCount]=useState(0);
  
+ //a functions when a player plays a move
     function Update(index, value){
         
-       if(!winner){
-          if(board[index]===""){
-              if(userType===nextTurn){
+       if(!winner){ //this function will only run if there is no winner after there if winner there will be no effect of clicking on a tile
+          if(board[index]===""){ //players will be able to click only if there is empty tile
+              if(userType===nextTurn){ //players can only click on tile if it is their turn
+              //updating the state og the board
          setBoard(prevList=>{
             
                 const boardCopy = [...prevList];
-                if(winner|| boardCopy[index]) return;
+               
+                if(winner||boardCopy[index])return; // return when there is a winner or there is someting on the tile.
                 value = move;
-                 boardCopy[index] = move;
+                boardCopy[index] = value;
                  
-                if(boardCopy[index]==="X")
+                if(boardCopy[index]==="X") //if playerX player setting next turn to plyerO and adding sound effect 
                 {    xsound.play();
                     setNextTurn(prevTurn=>"PlayerO");
                 }
-                else{
+                else{ //if playerO player setting next turn to plyerX and adding sound effect
                      osound.play();
                     setNextTurn(prevTurn=>"PlayerX");
                 }
     
-                if(userType==="PlayerX" || userType==="PlayerO")
+                if(userType==="PlayerX" || userType==="PlayerO") // emiting only if it is a playerX or playerY not a spectator
                             
                     socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
                     
@@ -82,49 +86,49 @@ export  function Board(){
           
         
        }
+        if(winner){
+                    socket.emit("winner",{winner:winner,username:name,userType:userType});
+                    
+                } // returinging when there is a winner 
+       
        
          }
+           // returinging when there is a winner 
         
-     
+   //fucntion when user logs in pressing the login button  
     function onPressLogin(){
         
-        if(inputRef === null){
+        if(inputRef === null){ //if user enter nothing then alerting user/\.
         alert("Enter a valid username.");
         
     }
-        if(inputRef!=null){
-        setLogin(prevIsLogin=> true);
-        setId(prevId=>prevId +1);
-        var username = inputRef.current.value;
+        if(inputRef!=null){ //user can loging only when user have enter someting
+        setLogin(prevIsLogin=> true);//setting the login state to true
+        setId(prevId=>prevId +1); // updating  the couter 
+        var username = inputRef.current.value; //setting username to the inputRef.
         
         username=inputRef.current.value;
-        setName(prevName=>username);
-     
-        setUser((prevUser)=>{
-            const userListCopy = [...prevUser];
-            userListCopy.push(username);
-            
-            return userListCopy;
-        });
-        addUser(id,username);
-        setUserType(id);
+        setName(prevName=>username);// setting name for current browser
+        addUser(id,username);//adding user to player list or spectator list based on their id number
+        setUserType(id); // seting the usertype for the user
         
          socket.emit("login" , {username:username,id:id,userType:userType});
     }
     }
+    //fucntion when user clicks on play again button after the game ended resetting the states
     function onReplay(){
         setBoard(prevBoard=>{
             let boardCopy = [...prevBoard];
             boardCopy = ["","","","","","","","",""];
             return boardCopy;
         });
-      
+        winner=null
         setNextTurn(prevTurn=>"PlayerX");
         console.log("relayed",board);
         socket.emit("replay", {board:board,winner:winner,nextTurn:nextTurn});
       
     }
-    
+    // function when user press button to see the leader board
     function onPressLeader(){
         if(leader===false){
             setLeader(prevLeader=>true);
@@ -134,7 +138,12 @@ export  function Board(){
         }
         
     }
-    
+    //function when user wants to update the leaderboard when the game ended
+    function onUpdateLeader(){
+         if(winner){
+             socket.emit("winner",{winner:winner,username:name,userType:userType});
+        }  
+    }
    
     useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
@@ -142,13 +151,13 @@ export  function Board(){
     socket.on('move', (data) => {
       console.log('move played!!!');
 
-      setBoard(prevList=>{
+      setBoard(prevList=>{ // updating the state of board when it recieves an event from server
           
            const boardCopy = [...prevList];
            console.log("data",data.val);
            boardCopy[data.index] = data.val;
            
-           if(boardCopy[data.index]==="X")
+           if(boardCopy[data.index]==="X") 
                 {
                     setNextTurn(prevTurn=>"PlayerO");
                 }
@@ -163,10 +172,11 @@ export  function Board(){
     });
     
     
-    socket.on("login",(data)=>{
+    socket.on("login",(data)=>{ //updating  states when recieving events from servers.
       console.log("socketid",socket.id); 
       console.log('User Logged!!!'); 
       console.log("login data",data);
+      //updating the id
         setId(prevId=>{
             var tempId = prevId;
             tempId++;
@@ -175,18 +185,12 @@ export  function Board(){
         let id = data.id;
         let username = data.username;
         let userType = data.userType;
+        //upddating the leader board
         setLeaderBoard(prevLeaderBoard=>JSON.parse(data.leaderboard));
-        setUser((prevUser)=>{
-       
-           console.log("id",data.id);
-            const userCopy = [...prevUser];
-            userCopy.push(username);
-            return userCopy;
-          });
-
-          addUser(id,username);
-          setNextMoove(userType);
+        addUser(id,username);// adding users to playerlist and spectatorlist
+        setNextMoove(userType);
       });
+      //resetting every states when replay button is hit by any of the server
       socket.on("replay",(data)=>{
            setBoard(prevBoard=>{
             let boardCopy = [...prevBoard];
@@ -194,16 +198,14 @@ export  function Board(){
             return boardCopy;
         });
         setNextTurn(prevTurn=>"PlayerX");
-        setIsWinner(prevWinner=>false);
-        winner=null;
+        winner=data.winner;
           
       });
       
-      
+      //updating leaderboard when there is a winner
        socket.on("winner",(data)=>{
           console.log("winner data",data);
-          let leaderboard = data.leaderboard
-          let id = data.id;
+          let leaderboard = data.leaderboard;
           setLeaderBoard(prevLeaderBoard=>JSON.parse(leaderboard));
           
       
@@ -214,13 +216,13 @@ export  function Board(){
   }, []);
  
     
-    const is_board_full = board.every(element=>element!="");
+    const is_board_full = board.every(element=>element!="");//checking if the board is full
     console.log(is_board_full);
     console.log(userType);
-   
+   //function to add user
     function addUser(id,username){
         
-        if(id< 3){
+        if(id< 3){ //if id counter is 1 or 2 it will add user to player list
             
                 setPlayer(prevPlayer=>{
                 const tempPlayer = [...prevPlayer];
@@ -228,7 +230,7 @@ export  function Board(){
                 return tempPlayer;
             });
           }
-          else{
+          else{ //if id counter is more than two then it will user to spectatorlist
              setSpect(prevSpect=>{
                  const tempSpect= [...prevSpect];
                  tempSpect.push(username);
@@ -237,6 +239,8 @@ export  function Board(){
              }) ;
           }
     }
+        //function to setnext move
+        
     function setNextMoove(userType){
          if(userType==="playerX"){
              setMove(prevMove=>"X");
@@ -245,19 +249,19 @@ export  function Board(){
               setMove(prevMove=>"O");
           }
     }
-    
+    //function to set user type
     function setUserType(id){
-        if(id===1){
+        if(id===1){ //if id is one than it is playerX
             setType(prevType=>"PlayerX");
             setMove(prevMove=>"X");
             
         }
-        else if(id===2){
+        else if(id===2){ //if id is 2 then the user is player
             setType(prevType=>"PlayerO");
             setMove(prevMove=>"O");
             
         }
-        else{
+        else{//else user is the spectator
             setType(prevType=>"Spectator");
         }
     }
@@ -301,6 +305,7 @@ export  function Board(){
                     <div>
                     
                     <Replay onReplay={onReplay} />
+                    <UpdateLeader onUpdateLeader={onUpdateLeader} />
                     </div>:("")
                 }
                 { (winner!= "PlayerX" || winner != "playerO" )&& is_board_full ? 
