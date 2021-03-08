@@ -7,6 +7,7 @@ import  {Replay} from "./Replay.js";
 import {Spect} from "./Spectators.js";
 import{winningTiles} from "./Winner.js";
 import {Leaderboard} from "./Leaderboard.js";
+import {UpdateLeader} from "./UpdateLeader.js";
 import UIfx from 'uifx';
 import mp3File from './audios/xsound.wav';
 import mp3File2 from './audios/osound.wav';
@@ -34,19 +35,24 @@ export  function Board(){
     const inputRef = useRef(null);
     const [user,setUser]= useState([]);
     const [id,setId]= useState(1);
-    const [userType,setType] = useState();
+    const [userType,setType] = useState(null);
     const [move,setMove] = useState(null);
     const [player,setPlayer]= useState([]);
     const [spect,setSpect] = useState([]);
     const [nextTurn,setNextTurn] =useState("PlayerX");
-    let winner = calculateWinner(board);
-    let tiles = winningTiles(board);
     const [leader,setLeader] =useState(false);
-    
+    const [leaderBoard,setLeaderBoard] = useState({});
+    let winner = calculateWinner(board);
+    const [isWinner,setIsWinner] = useState(false);
+    const [name,setName] =useState(null);
+    let tiles = winningTiles(board);
+    let count = 0;
+ 
     function Update(index, value){
         
-       if(!winner ){
+       if(!winner){
           if(board[index]===""){
+              if(userType===nextTurn){
          setBoard(prevList=>{
             
                 const boardCopy = [...prevList];
@@ -67,15 +73,19 @@ export  function Board(){
                             
                     socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
                     
-                 
+                    
                 return boardCopy;
          });
+              }
+           
           }
+          
         
        }
        
          }
-         
+        
+     
     function onPressLogin(){
         
         if(inputRef === null){
@@ -88,6 +98,7 @@ export  function Board(){
         var username = inputRef.current.value;
         
         username=inputRef.current.value;
+        setName(prevName=>username);
      
         setUser((prevUser)=>{
             const userListCopy = [...prevUser];
@@ -107,7 +118,7 @@ export  function Board(){
             boardCopy = ["","","","","","","","",""];
             return boardCopy;
         });
-        
+      
         setNextTurn(prevTurn=>"PlayerX");
         console.log("relayed",board);
         socket.emit("replay", {board:board,winner:winner,nextTurn:nextTurn});
@@ -124,6 +135,7 @@ export  function Board(){
         
     }
     
+   
     useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
     // run the code in the function that is passed in as the second arg
@@ -154,7 +166,7 @@ export  function Board(){
     socket.on("login",(data)=>{
       console.log("socketid",socket.id); 
       console.log('User Logged!!!'); 
-      console.log(data);
+      console.log("login data",data);
         setId(prevId=>{
             var tempId = prevId;
             tempId++;
@@ -163,6 +175,7 @@ export  function Board(){
         let id = data.id;
         let username = data.username;
         let userType = data.userType;
+        setLeaderBoard(prevLeaderBoard=>JSON.parse(data.leaderboard));
         setUser((prevUser)=>{
        
            console.log("id",data.id);
@@ -181,15 +194,30 @@ export  function Board(){
             return boardCopy;
         });
         setNextTurn(prevTurn=>"PlayerX");
+        setIsWinner(prevWinner=>false);
         winner=null;
           
       });
       
+      
+       socket.on("winner",(data)=>{
+          console.log("winner data",data);
+          let leaderboard = data.leaderboard
+          let id = data.id;
+          setLeaderBoard(prevLeaderBoard=>JSON.parse(leaderboard));
+          
+      
+       }
+      );
+     
+      
   }, []);
-
+ 
+    
     const is_board_full = board.every(element=>element!="");
     console.log(is_board_full);
-    
+    console.log(userType);
+   
     function addUser(id,username){
         
         if(id< 3){
@@ -271,7 +299,7 @@ export  function Board(){
             {( (winner ==="PlayerX" || winner ==="PlayerO") && (userType==="PlayerX" || userType === "PlayerO")||
                  ( ( winner!= "PlayerX" || winner != "playerO" ) &&  userType==="PlayerX" || userType === "PlayerO") && is_board_full) ? 
                     <div>
-                   
+                    
                     <Replay onReplay={onReplay} />
                     </div>:("")
                 }
@@ -281,7 +309,7 @@ export  function Board(){
             </div>
                 </ul>
             </div>
-            <Leaderboard  onPressLeader={ onPressLeader} leader={leader} />
+            <Leaderboard  name={name} leaderboard={leaderBoard} onPressLeader={ onPressLeader} leader={leader} />
             <div cLass="spectlist">
                 
                 <h2>Spectators:</h2>
@@ -308,4 +336,3 @@ export  function Board(){
     
     );
 }
-

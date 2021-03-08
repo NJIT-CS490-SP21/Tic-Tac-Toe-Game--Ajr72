@@ -4,7 +4,8 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
-
+from sqlalchemy import desc
+from flask import request
 load_dotenv(find_dotenv()) # This is to load your env variables from .env
 app = Flask(__name__, static_folder='./build/static')
 
@@ -38,8 +39,8 @@ def index(filename):
 # When a client connects from this Socket connection, this function is run
 @socketio.on('connect')
 def on_connect():
-    print('User connected!')
-
+    leaderboard={}
+    
 # When a client disconnects from this Socket connection, this function is run
 @socketio.on('disconnect')
 def on_disconnect():
@@ -59,27 +60,87 @@ def on_move(data): # data is whatever arg you pass in your emit call on client
     """Connecting Socket"""
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('move', data, broadcast=True, include_self=True)
+    socketio.emit('move', data, broadcast=True, include_self=False)
 
 @socketio.on('login')
 def on_login(data): # data is whatever arg you pass in your emit call on client
     """Connecting Socket"""
-    print(str((data)))
-    users.append(data['username'])
-    if(data["id"] == 1 or data["id"] == 2):
-        players.append(data['username'])
-    else:
-        spectators.append(data['username'])
+    print("username",data["username"],"request.sid",request.sid)
+    global leaderboard
+    all_users =models.Players.query.all()
+    users=[]
+    users_data=[];
+    leaderboard={}
+    
+    #print("username",data["username"],"request.sid",request.sid)
+   # print("login",str(data))
+    #print("userType",data["userType"])
+    for people in all_users:
+        users.append(people.username)
+    
+    if data["username"] not in users:
+   
+        new_user = models.Players(username=data['username'],score=100)
+        #print("newuser",new_user)
+        db.session.add(new_user)
+        db.session.commit()
+    
+    desc_ordered_list = models.Players.query.order_by(desc(models.Players.score)).all()
+    for user in desc_ordered_list:
+        leaderboard[user.username] = user.score
+    users_data.append(leaderboard)
+    #print(users_data)
+    
+    
+   
+   # print("leaderboard",leaderboard)
+    leaderboard=json.dumps(leaderboard,sort_keys=False)
+   
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('login', data, broadcast=True, include_self=False)
+    #{"username":data["username"],"score":score,"id":data["id"],"userType":data["userType"]}
+    socketio.emit('login', {"username":data["username"],"id":data["id"],"userType":data["userType"],"leaderboard":leaderboard}, broadcast=True, include_self=False)
+
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 @socketio.on("replay")
 def on_replay(data):
- socketio.emit('replay', data, broadcast=True, include_self=True) 
+ socketio.emit('replay', data, broadcast=True, include_self=False) 
 
 # Note we need to add this line so we can import app in the python shell
+
+@socketio.on("winner")
+def on_winner(data):
+    print(data)
+    print("userType",data["userType"],request.sid)
+    leaderboard ={}
+    
+    if(data["userType"]=="PlayerX" or data["userType"]=="PlayerO"):
+        user = db.session.query(models.Players).filter_by(username=data["username"]).first()
+        print(user,user.username,user.score)
+        
+       # print(user,"before score",user.score)
+        if data['winner']==data["userType"]:
+          user.score+=+1
+          db.session.commit()
+          #print("winner",leaderboard[user.username])
+          print(user, "after score", user.score)
+        elif data['winner']!=data["userType"]:
+            user.score-=1
+            db.session.commit()
+        else:
+            user.score+=0
+            db.session.commit()
+          #print("losser",leaderboard[user.username])
+            print(user, "after score", user.score)
+        desc_ordered_list = models.Players.query.order_by(desc(models.Players.score)).all()
+        for user in desc_ordered_list:
+            leaderboard[user.username] = user.score
+        leaderboard=json.dumps(leaderboard,sort_keys=False)
+        
+         
+    socketio.emit('winner',{"winner":data["winner"],"username": data["username"],"id":data["id"] ,"userType":data["userType"],"leaderboard":leaderboard},broadcast=True, include_self=True)      
+
 if __name__ == "__main__":
 # Note that we don't call app.run anymore. We call socketio.run with app arg
     socketio.run(
