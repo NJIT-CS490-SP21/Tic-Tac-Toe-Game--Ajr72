@@ -108,21 +108,22 @@ def on_winner(data):
     """ when recieving winner event"""
     print(data)
     print("userType",data["userType"],request.sid)
-    player=data["players"]
-    playerX= db.session.query(models.Players).filter_by(username=data["players"][0]).first()
-    playerO= db.session.query(models.Players).filter_by(username=data["players"][1]).first()
+  
+    playerX= db.session.query(models.Players).filter_by(username=data["players"][0]).first() #player withe user name of playerX from database.
+    playerO= db.session.query(models.Players).filter_by(username=data["players"][1]).first() #player withe user name of playerO from database.
         
     leaderboard ={}#empty dictionaryfor leaderboard
 
         
   
-    if  playerX.username == data["username"]:
+    if  playerX.username == data["username"]: #adding 1 point to the score of a  playerX if  it's user name matches with the username of winner
         playerX.score+=1
         db.session.commit()
     else:
         playerX.score-=1
         db.session.commit()
-    if playerO.username == data["username"]:
+        
+    if playerO.username == data["username"]: #adding 1 point to the score of a  playerO if  it's user name matches with the username of winner
         playerO.score+=1
         db.session.commit()
     else:

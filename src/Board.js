@@ -79,7 +79,7 @@ export  function Board(){
                             
                     socket.emit('move', {index:index, val:boardCopy[index],nextTurn:nextTurn});
                     
-                if(future_winner){
+                if(future_winner){ //emit info if there is a winner
                 
                         socket.emit("winner",{winner:future_winner,players:player,username:name,userType:userType});
                    
