@@ -1,9 +1,8 @@
 
-# Tic Tac Toe Game App project 2
+
 
 # Cs490 Project2-ajr72 Multiplayer Tic Tac Toe Game
 
-# Flask and create-react-app
 # Technologies used in this Project:
   * **CSS**: To give style and design to the webpage.
   * **Python**: It is programing language which will host the Flask Framework and socket on server side.
