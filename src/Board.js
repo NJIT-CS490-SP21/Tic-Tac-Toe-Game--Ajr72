@@ -92,10 +92,7 @@ export  function Board(){
           
         
        }
-        if(winner){
-                    socket.emit("winner",{winner:winner,username:name,userType:userType});
-                    
-                } // returinging when there is a winner 
+       
        
        
          }
