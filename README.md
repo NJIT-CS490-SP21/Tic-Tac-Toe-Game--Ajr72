@@ -1,13 +1,8 @@
-<<<<<<< HEAD
+
 # Tic Tac Toe Game App project 2
-=======
+
 # Cs490 Project2-ajr72 Multiplayer Tic Tac Toe Game
->>>>>>> 617b94a516f684eb59270afccd3a7cebec2389ab
 
-
-<<<<<<< HEAD
-
-=======
 # Flask and create-react-app
 # Technologies used in this Project:
   * **CSS**: To give style and design to the webpage.
@@ -37,7 +32,7 @@
 *Don't do the Heroku step for assignments, you only need to deploy for Project 2*
 1. Create a Heroku app: `heroku create --buildpack heroku/python`
 2. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/nodejs`
-<<<<<<< HEAD
+
 3. Push to Heroku: `git push heroku miestne_1:main`
 ## How to clone this repository
 * Option one: clone this directory using the clone button.
@@ -54,7 +49,7 @@
 -> I solved this issue by removing the error in my Board.js file and added buildpacks as shown above.
 3. Third Issue i was having was that somehow when there was a draw in the match then my app was not showing it was a draw. The issue was that it was not updating the properly.
 -> I solved this error by updating the state correctly.
-=======
+
 3. Push to Heroku: `git push heroku :milestone_2:main```
 
 ## Known Problems.
@@ -69,4 +64,4 @@
 2. I had an issue with updating the score for players when the game ends.the mistake I was making that I was only emit data only for winner but not for losser so it was udating score only for the winner. I solved this issue with the help of professor.To solve this proplem I emitted the list of players and username of winner from client to server and then created variable for playerX and playerO that would be the player from databse with the username of players in the player list. if the PlayerX or PlayerO's username is equal to username of player then added point to the score or else deduct the point from score.
 3. The third isuue I was having to make queries in using sqlAlchamy. I used the resources provided in the milestone specs to solve the issue.
 4. I had issue with deploying app to heroku. I solved the issue by following lecture and hw notes provided by the professor.
->>>>>>> 617b94a516f684eb59270afccd3a7cebec2389ab
+
