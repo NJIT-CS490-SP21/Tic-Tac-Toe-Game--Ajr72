@@ -18,7 +18,7 @@
 3. ```Flask-Cors```: to handle cross-origins in reacts.js
 4. ```Flask-SocketIO```: to talk to recieving and emmint event from and to cliens in react.js.
 5. ```Flask-SQLAlchemy``` to maintain the  databse of users and their scores.
->>>>>>> 617b94a516f684eb59270afccd3a7cebec2389ab
+
 ## Setup
 1. Run `echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.development.local` in the project directory
 
