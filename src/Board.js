@@ -8,7 +8,7 @@ import  {Replay} from "./Replay.js";
 import {Spect} from "./Spectators.js";
 import{winningTiles} from "./Winner.js";
 import {Leaderboard} from "./Leaderboard.js";
-import {UpdateLeader} from "./UpdateLeader.js";
+
 import UIfx from 'uifx'; //library to add sound
 import mp3File from './audios/xsound.wav';//sound when playerX plays the move
 import mp3File2 from './audios/osound.wav';//sound when PlayerO plays the move
