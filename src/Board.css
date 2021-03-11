@@ -1,50 +1,111 @@
+body{
+	margin:0;
+	background-image: url("tic-tac-toe.png");
+}
 .board {
-	width: 300px; /* Total horizontal dimensions */
-	height: 300px; /* Total vertical dimensions */
+	width: 350px; /* Total horizontal dimensions */
+	height: 350px; /* Total vertical dimensions */
 	display: grid; /* Enables CSS Grid */ 
 	grid-template-columns: repeat(3, 1fr); /* Total horizontal space broken into 3 columns */
   grid-template-rows: repeat(3, 1fr); /* Total vertical space broken into 3 rows */
   margin:auto;
-  border:solid 2px black;
+  border-top:dashed 4px #ef8d32;
+  border-left:dashed 4px #ef8d32;
+  background:#f4c983;
+  margin-top: 45px;
+  
+ 
+   
+  
 }
 
 .box {
-  border: 2px solid black; /* Shows the lines in the CSS grid */
-  
+  border-right:dashed 4px #ef8d32; /* Shows the lines in the CSS grid */
+  border-bottom:dashed 4px #ef8d32
+}
+
+.spectlist{
+
+	font-weight:bold;
+	
+	width: 350px; /* Total horizontal dimensions */
+	height: 250px; /* Total vertical dimensions */
+	background:#b4aee8;
+	float:right;
+	margin-right:10%;
+	margin-top:10px; 
+	margin-bottom:50px;
+	border:solid 2px black;
+}
+.playerlist{
+
+	
+	width: 350px; /* Total horizontal dimensions */
+	height: 250px; /* Total vertical dimensions */
+	background:#b4aee8;
+	float:left;
+  	margin-left:10%;
+  	margin-bottom:50px;
+  	margin-top:10px;
+  	border:solid 2px black;
+   
+}
+.leaderboard{
+	width: 350px; /* Total horizontal dimensions */
+	height: 250px; /* Total vertical dimensions */
+	background:#b4aee8;
+	float:left;
+  	margin-left:5%;
+  	margin-bottom:40px;
+  	margin-top:10px;
+  	border:solid 2px black;
 }
 .move{
-	font-size: 3em;
-	text-align:center;
-	margin-left: 30%;
-	margin-top: 23%;
+	font-size: 4.4em;
+	margin-top: 40%;
+	margin-left: 35%;
 	color:red;
 	font-weight:bold;
-	text-shadow: 3px 3px black;
+	text-shadow: 5px 5px 10px #111d5e;
 }
 .login{
-	margin-left:38%;
+	margin-left:30%;
+	width:35%;
+	height:250px;
+	background:#b4aee8;
+	opacity:0.7;
+	position:absolute;
+	margin-top:30px;
+}
+.login-button{
+	margin-left:43%;
+	margin-top: 20px;
 	
 }
 .login-box{
-	margin-right:10px;
-	height: 20px;
-	width: 250px;
-	margin-left:-5%;
-}
-.login-button:{
 	
+	height: 30px;
+	width: 250px;
+	margin-left:30%;
+	border-radius:15px;
+	text-align:center;
+	box-shadow:5px 5px 3px;
 }
-.spectlist{
-	margin-left:45%;
-	font-weight:bold;
-}
+
 .heading{
-	margin-left:15%;
+
+	width:80%;
+	height:70px;
+	background-color:#93329e;
+	text-align: center;
+	margin-left:10%;
+	border-radius:15px;
 }
-#playerlist{
-	margin-left:45%;
+h1{
+	padding:3px;
 }
-.replay {
+
+button {
 	box-shadow:inset 0px 1px 0px 0px #ffffff;
 	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
 	background-color:#ffffff;
@@ -59,12 +120,51 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
+
 }
-.replay:hover {
+button:hover {
 	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
 	background-color:#f6f6f6;
+	box-shadow:5px 5px 2px;
 }
-.replay:active {
+button:active {
 	position:relative;
 	top:1px;
+}
+.win{
+	background:#b4aee8;
+	
+	
+}
+.active-user{
+	background-color:#93329e;
+}
+.please{
+	margin-left:35%;
+	font-weight:bold;
+}
+
+.leader-button{
+	margin-left:25%;
+	margin-top:10px;
+}
+div.spectlist
+{
+   overflow-y:scroll;
+}
+div.leaderboard
+{
+   overflow-y:scroll;
+}
+tr , th , td  {
+    border: 3px solid black;
+  
+    text-align: center;
+}
+table{
+	margin-left: 40px;
+	margin-top:5px;
+}
+table{ 
+	width:80px;
 }

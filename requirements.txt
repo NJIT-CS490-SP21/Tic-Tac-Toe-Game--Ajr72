@@ -3,8 +3,8 @@ Flask==1.1.2
 Flask-Cors==3.0.10
 Flask-SocketIO==5.0.1
 Flask-SQLAlchemy==2.1
-
+psycopg2
 pylint-flask==0.6
-
+python-dotenv
 python-socketio==5.0.4
 
