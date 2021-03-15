@@ -1,37 +1,57 @@
-import "./Board.css";
-export function Square(props) {
-  if (props.winner === "PlayerX" || props.winner === "PlayerO") {
+import './Board.css';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+export function Square({
+  winner, i, tiles, move, board, Update,
+}) {
+  if (winner === 'PlayerX' || winner === 'PlayerO') {
     if (
-      props.i === props.tiles[0] ||
-      props.i === props.tiles[1] ||
-      props.i === props.tiles[2]
+      i === tiles[0]
+      || i === tiles[1]
+      || i === tiles[2]
     ) {
       return (
         <div
-          onClick={() => props.Update(props.i, props.move, props.winner)}
+          onClick={() => Update(i, move, winner)}
+          onKeyDown={() => Update(i, move, winner)}
+          role="button"
+          tabIndex={0}
           className="box win"
         >
-          <span className="move">{props.board[props.i]}</span>
-        </div>
-      );
-    } else {
-      return (
-        <div
-          onClick={() => props.Update(props.i, props.move, props.winner)}
-          className="box "
-        >
-          <span className="move">{props.board[props.i]}</span>
+          <span className="move">{board[i]}</span>
         </div>
       );
     }
-  } else {
     return (
       <div
-        onClick={() => props.Update(props.i, props.move, props.winner)}
+        onClick={() => Update(i, move, winner)}
+        onKeyDown={() => Update(i, move, winner)}
+        role="button"
+        tabIndex={0}
         className="box "
       >
-        <span className="move">{props.board[props.i]}</span>
+        <span className="move">{board[i]}</span>
       </div>
     );
   }
+  return (
+    <div
+      onClick={() => Update(i, move, winner)}
+      onKeyDown={() => Update(i, move, winner)}
+      role="button"
+      tabIndex={0}
+      className="box "
+    >
+      <span className="move">{board[i]}</span>
+    </div>
+  );
 }
+Square.propTypes = {
+  winner: PropTypes.string.isRequired,
+  i: PropTypes.number.isRequired,
+  tiles: PropTypes.arrayOf(PropTypes.string).isRequired,
+  move: PropTypes.string.isRequired,
+  Update: PropTypes.func.isRequired,
+  board: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

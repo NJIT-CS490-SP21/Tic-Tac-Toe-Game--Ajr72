@@ -1,9 +1,18 @@
-export function Spect(props) {
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export function Spect({ spect }) {
   return (
     <ul>
-      {props.spect.map((item, key) => (
-        <li> {item}</li>
+      {spect.map((item) => (
+        <li>
+          {' '}
+          {item}
+        </li>
       ))}
     </ul>
   );
 }
+Spect.propTypes = {
+  spect: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

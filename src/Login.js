@@ -1,16 +1,23 @@
-export function Login(props) {
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export function Login({ inputRef, onPressLogin }) {
   return (
     <div>
       <input
         className="login-box"
-        ref={props.inputRef}
+        ref={inputRef}
         type="text"
         placeholder="Enter your username here!!!"
-      ></input>
+      />
       <br />
-      <button className="login-button" onClick={() => props.onPressLogin()}>
+      <button type="button" className="login-button" onClick={() => onPressLogin()}>
         Login
       </button>
     </div>
   );
 }
+Login.propTypes = {
+  onPressLogin: PropTypes.func.isRequired,
+  inputRef: PropTypes.string.isRequired,
+};

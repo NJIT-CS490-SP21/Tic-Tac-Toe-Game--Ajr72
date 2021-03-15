@@ -1,11 +1,15 @@
-from app import db
+# pylint: disable= E1101, C0413, R0903, W0603, W1508
+
+from app import DB
 
 
- 
-class Players(db.Model):
-   
-    username = db.Column(db.String(80), unique=True,primary_key=True, nullable=False)
-    score = db.Column(db.Integer, nullable=False)
+class Players(DB.Model):
+
+    username = DB.Column(DB.String(80),
+                         unique=True,
+                         primary_key=True,
+                         nullable=False)
+    score = DB.Column(DB.Integer, nullable=False)
 
     def __repr__(self):
         return '<Person %r>' % self.username

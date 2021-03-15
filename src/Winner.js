@@ -9,18 +9,18 @@ export function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
+  for (let i = 0; i < lines.length; i += 1) {
     const [a, b, c] = lines[i];
-    var winner;
+    let winner;
 
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      if (squares[a] === "X") {
-        winner = "PlayerX";
+      if (squares[a] === 'X') {
+        winner = 'PlayerX';
       } else {
-        winner = "PlayerO";
+        winner = 'PlayerO';
       }
 
-      console.log([a, b, c]);
+      // console.log([a, b, c]);
       return winner;
     }
   }
@@ -38,12 +38,11 @@ export function winningTiles(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
+  for (let i = 0; i < lines.length; i += 1) {
     const [a, b, c] = lines[i];
-    var winner;
 
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      console.log([a, b, c]);
+      // console.log([a, b, c]);
       return [a, b, c];
     }
   }

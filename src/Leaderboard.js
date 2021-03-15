@@ -1,40 +1,53 @@
-export function Leaderboard(props) {
-  let rows = [];
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export function Leaderboard({
+  leaderboard, name, leader, onPressLeader,
+}) {
+  const rows = [];
   let rank = 1;
-  Object.keys(props.leaderboard).map(function (keyName, keyIndex) {
+  Object.keys(leaderboard).map((keyName) => {
     // use keyName to get current key's name
-    if (props.name === keyName) {
+    if (name === keyName) {
       rows.push(
         <tr className="active-user" index={rank}>
-          {" "}
-          <td>{rank}</td> <td>{keyName}</td>{" "}
-          <td>{props.leaderboard[keyName]}</td>
-        </tr>
+          {' '}
+          <td>{rank}</td>
+          {' '}
+          <td>{keyName}</td>
+          {' '}
+          <td>{leaderboard[keyName]}</td>
+        </tr>,
       );
     } else {
       rows.push(
         <tr index={rank}>
-          {" "}
-          <td>{rank}</td> <td>{keyName}</td>{" "}
-          <td>{props.leaderboard[keyName]}</td>
-        </tr>
+          {' '}
+          <td>{rank}</td>
+          {' '}
+          <td>{keyName}</td>
+          {' '}
+          <td>{leaderboard[keyName]}</td>
+        </tr>,
       );
     }
     // and a[keyName] to get its value
-    rank++;
+    rank += 1;
+    return rank;
   });
   return (
     <div className="leaderboard">
       <div>
-        {" "}
+        {' '}
         <button
           className=" leader-button"
-          onClick={() => props.onPressLeader()}
+          onClick={() => onPressLeader()}
+          type="button"
         >
           Show Leaderboard
         </button>
       </div>
-      {props.leader === true ? (
+      {leader === true ? (
         <div>
           <table>
             <thead>
@@ -48,8 +61,14 @@ export function Leaderboard(props) {
           </table>
         </div>
       ) : (
-        ""
+        ''
       )}
     </div>
   );
 }
+Leaderboard.propTypes = {
+  leaderboard: PropTypes.objectOf(PropTypes.string).isRequired,
+  onPressLeader: PropTypes.func.isRequired,
+  leader: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired,
+};

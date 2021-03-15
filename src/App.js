@@ -1,5 +1,6 @@
-import { Board } from "./Board.js";
-import "./Board.css";
+import React from 'react';
+import { Board } from './Board';
+import './Board.css';
 
 function App() {
   return <Board />;
