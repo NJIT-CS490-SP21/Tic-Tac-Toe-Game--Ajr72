@@ -67,7 +67,7 @@ def on_move(data):  # data is whatever arg you pass in your emit call on client
 def on_login(
         data):  # data is whatever arg you pass in your emit call on client
     """whever players login"""
-    print("username", data["username"], "request.sid", request.sid,"userType", data["userType"])
+    print("username", data["username"], "request.sid", request.sid, "userType", data["userType"])
 
     leaderboard = add_user_to_db(data["username"])
 
@@ -142,8 +142,8 @@ def get_leaderboard():
     desc_ordered_list = models.Players.query.order_by(
         desc(models.Players.score)).all(
         )#list of user in descending order based on the score
-    for user in desc_ordered_list: 
-        #adding username as a key and score as a value to the leaderboard dictionary
+    for user in desc_ordered_list: #adding username as a key and
+    #score as a value to the leaderboard dictionary
         leader[user.username] = user.score
     leader = json.dumps(leader, sort_keys=False)
     return leader
@@ -158,25 +158,28 @@ def update_score(username, players):
     player_o = DB.session.query(
         models.Players).filter_by(username=players[1]).first(
         )#player withe user name of playerO from database.
-    if player_x.username == username:  
-    #adding 1 point to the score of a playerX if  
-    #it's user name matches with the username of winner
+    if is_winner(player_x.username, username):
+        #adding 1 point to the score of a playerX if
+        #it's user name matches with the username of winner
         player_x.score += 1
         DB.session.commit()
     else:
         player_x.score -= 1
         DB.session.commit()
 
-    if player_o.username == username:  
-    #adding 1 point to the score of a playerO if  
-    #it's user name matches with the username of winner
+    if is_winner(player_o.username, username):
+        #adding 1 point to the score of a playerO if
+        #it's user name matches with the username of winner
         player_o.score += 1
         DB.session.commit()
     else:
         player_o.score -= 1
         DB.session.commit()
-
-
+def is_winner(db_username, data_username):
+    """Check if the player is winnner or not"""
+    if db_username == data_username:
+        return True
+    return False
 if __name__ == "__main__":
     # Note that we don't call app.run anymore. We call socketio.run with app arg
     SOCKETIO.run(
