@@ -13,6 +13,7 @@ export function Square({
     ) {
       return (
         <div
+          data-testid="tile"
           onClick={() => Update(i, move, winner)}
           onKeyDown={() => Update(i, move, winner)}
           role="button"
@@ -37,13 +38,14 @@ export function Square({
   }
   return (
     <div
+      data-testid="tile"
       onClick={() => Update(i, move, winner)}
       onKeyDown={() => Update(i, move, winner)}
       role="button"
       tabIndex={0}
       className="box "
     >
-      <span className="move">{board[i]}</span>
+      <span data-test-id="move" className="move">{board[i]}</span>
     </div>
   );
 }

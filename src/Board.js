@@ -324,9 +324,9 @@ export  function Board(){
          ( 
          <div>
              <div class="conatiner">
-                 <div class = "board">
+                 <div data-testid="boardid" class = "board">
                 
-                <Square id="0" i={0}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
+                <Square data-testid="tile1" id="0" i={0}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
                 <Square id="1" i={1}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
                 <Square id="2" i={2}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
                 <Square id="3" i={3}  winner={winner} tiles={tiles} Update={Update} move={move} board={board} />
@@ -358,7 +358,7 @@ export  function Board(){
             </div>
                 </ul>
             </div>
-            <Leaderboard  name={name} leaderboard={leaderBoard} onPressLeader={ onPressLeader} leader={leader} />
+            <Leaderboard  data-testid = "leader-board" name={name} leaderboard={leaderBoard} onPressLeader={ onPressLeader} leader={leader} />
             <div cLass="spectlist">
                 
                 <h2>Spectators:</h2>
