@@ -8,8 +8,7 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
-from sqlalchemy import desc
-
+# from sqlalchemy import desc
 load_dotenv(find_dotenv())  # This is to load your env variables from .env
 APP = Flask(__name__, static_folder='./build/static')
 
@@ -67,7 +66,7 @@ def on_move(data):  # data is whatever arg you pass in your emit call on client
 def on_login(
         data):  # data is whatever arg you pass in your emit call on client
     """whever players login"""
-    print("username", data["username"], "request.sid", request.sid, "userType", data["userType"])
+    print("username", data["username"], "request.sid", request.sid)
 
     leaderboard = add_user_to_db(data["username"])
 
@@ -77,7 +76,6 @@ def on_login(
     SOCKETIO.emit('login', {
         "username": data["username"],
         "id": data["id"],
-        "userType": data["userType"],
         "leaderboard": leaderboard
     },
                   broadcast=True,
@@ -90,21 +88,25 @@ def add_user_to_db(user):
     )  #all users in the players table in the database
     users = []  #userlist
     leaderboard = {}  #leaderboard
-
+    unordered_leader_board = dict
     #print("username",data["username"],"request.sid",request.sid)
     # print("login",str(data))
     #print("userType",data["userType"])
     for people in all_users:  #adding all users to user's list
         users.append(people.username)
-
     if user not in users:  #if user is not in the database add to the database with the score of 100
-
         new_user = models.Players(username=user, score=100)
         #print("newuser",new_user)
         DB.session.add(new_user)
         DB.session.commit()
-
-    leaderboard = get_leaderboard()
+    new_all_users = models.Players.query.all(
+    )
+    for a_user in new_all_users:
+        unordered_leader_board[a_user.username] = a_user.score
+        print(a_user.username)
+    #print(unordered_leader_board)
+    leaderboard = get_leaderboard(unordered_leader_board)
+    print("leaderboard", leaderboard)
 
     return leaderboard
 
@@ -116,8 +118,6 @@ def on_replay(data):
 
 
 # Note we need to add this line so we can import app in the python shell
-
-
 @SOCKETIO.on("winner")
 def on_winner(data):
     """ when recieving winner event"""
@@ -125,10 +125,14 @@ def on_winner(data):
     print("userType", data["userType"], request.sid)
 
     leaderboard = {}  #empty dictionaryfor leaderboard
-
+    unordered_leader_board = {}
     update_score(data["username"], data["players"])
+    all_users = models.Players.query.all(
+    )  #all users in the players table in the database
+    for user in all_users:
+        unordered_leader_board[user.username] = user.score
 
-    leaderboard = get_leaderboard()
+    leaderboard = get_leaderboard(unordered_leader_board)
 
     SOCKETIO.emit('winner', {"leaderboard": leaderboard},
                   broadcast=True,
@@ -136,17 +140,17 @@ def on_winner(data):
 
 
 #function to get the leaderboard in descending order
-def get_leaderboard():
+def get_leaderboard(unordered_leader_board):
     """ Getting leader board in decending order"""
-    leader = {}
-    desc_ordered_list = models.Players.query.order_by(
-        desc(models.Players.score)).all(
-        )#list of user in descending order based on the score
-    for user in desc_ordered_list: #adding username as a key and
-    #score as a value to the leaderboard dictionary
-        leader[user.username] = user.score
-    leader = json.dumps(leader, sort_keys=False)
-    return leader
+
+    desc_ordered_list = dict(
+        sorted(unordered_leader_board.items(),
+               key=lambda item: item[1],
+               reverse=True))
+
+    desc_ordered_list = json.dumps(desc_ordered_list, sort_keys=False)
+    # for unmocked unit testing lease comment the above line
+    return desc_ordered_list
 
 
 #function to update the score of player based on if he is the winner or looser.
@@ -157,7 +161,7 @@ def update_score(username, players):
         )  #player withe user name of playerX from database.
     player_o = DB.session.query(
         models.Players).filter_by(username=players[1]).first(
-        )#player withe user name of playerO from database.
+        )  #player withe user name of playerO from database.
     if is_winner(player_x.username, username):
         #adding 1 point to the score of a playerX if
         #it's user name matches with the username of winner
@@ -175,11 +179,15 @@ def update_score(username, players):
     else:
         player_o.score -= 1
         DB.session.commit()
+
+
 def is_winner(db_username, data_username):
     """Check if the player is winnner or not"""
     if db_username == data_username:
         return True
     return False
+
+
 if __name__ == "__main__":
     # Note that we don't call app.run anymore. We call socketio.run with app arg
     SOCKETIO.run(

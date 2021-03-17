@@ -162,7 +162,7 @@ export  function Board(){
         addUser(id,username);//adding user to player list or spectator list based on their id number
         setUserType(id); // seting the usertype for the user
         
-         socket.emit("login" , {username:username,id:id,userType:userType});
+         socket.emit("login" , {username:username,id:id});
     }
     }
     //fucntion when user clicks on play again button after the game ended resetting the states
@@ -228,7 +228,7 @@ export  function Board(){
         });
         let id = data.id;
         let username = data.username;
-        let userType = data.userType;
+        
         //upddating the leader board
         setLeaderBoard(prevLeaderBoard=>JSON.parse(data.leaderboard));
         addUser(id,username);// adding users to playerlist and spectatorlist

@@ -12,4 +12,4 @@ class Players(DB.Model):
     score = DB.Column(DB.Integer, nullable=False)
 
     def __repr__(self):
-        return '<Person %r>' % self.username
+        return '<Player %r>' % self.username
