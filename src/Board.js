@@ -228,7 +228,7 @@ export  function Board(){
         });
         let id = data.id;
         let username = data.username;
-        
+        let userType = data.userType;
         //upddating the leader board
         setLeaderBoard(prevLeaderBoard=>JSON.parse(data.leaderboard));
         addUser(id,username);// adding users to playerlist and spectatorlist
