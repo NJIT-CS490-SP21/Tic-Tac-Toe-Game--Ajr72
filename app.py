@@ -69,7 +69,7 @@ def on_login(
     print("username", data["username"], "request.sid", request.sid)
 
     leaderboard = add_user_to_db(data["username"])
-
+    print(leaderboard)
     # This emits the 'login' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     #{"username":data["username"],"score":score,"id":data["id"],"userType":data["userType"]}
@@ -88,28 +88,31 @@ def add_user_to_db(user):
     )  #all users in the players table in the database
     users = []  #userlist
     leaderboard = {}  #leaderboard
-    unordered_leader_board = dict
+    unordered_leader_board = {} # unordered leaderboard
     #print("username",data["username"],"request.sid",request.sid)
     # print("login",str(data))
     #print("userType",data["userType"])
     for people in all_users:  #adding all users to user's list
         users.append(people.username)
+    
     if user not in users:  #if user is not in the database add to the database with the score of 100
         new_user = models.Players(username=user, score=100)
         #print("newuser",new_user)
         DB.session.add(new_user)
         DB.session.commit()
-    new_all_users = models.Players.query.all(
-    )
-    for a_user in new_all_users:
-        unordered_leader_board[a_user.username] = a_user.score
-        print(a_user.username)
+    for a_user in all_users:
+        key = a_user.username
+        key = str(key)
+        scores = a_user.score
+        print("key", key)
+        unordered_leader_board[key] = scores
+        #print("type of a_user.username", type(a_user.username))
     #print(unordered_leader_board)
     leaderboard = get_leaderboard(unordered_leader_board)
-    print("leaderboard", leaderboard)
-
+    # print("leaderboard", leaderboard)
     return leaderboard
 
+    
 
 @SOCKETIO.on("replay")
 def on_replay(data):
@@ -148,8 +151,8 @@ def get_leaderboard(unordered_leader_board):
                key=lambda item: item[1],
                reverse=True))
 
-    desc_ordered_list = json.dumps(desc_ordered_list, sort_keys=False)
-    # for unmocked unit testing lease comment the above line
+    #desc_ordered_list = json.dumps(desc_ordered_list, sort_keys=False)
+    # for  unit testing mocked or unmocked please comment the above line
     return desc_ordered_list
 
 
