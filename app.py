@@ -94,7 +94,6 @@ def add_user_to_db(user):
     #print("userType",data["userType"])
     for people in all_users:  #adding all users to user's list
         users.append(people.username)
-    
     if user not in users:  #if user is not in the database add to the database with the score of 100
         new_user = models.Players(username=user, score=100)
         #print("newuser",new_user)
@@ -111,9 +110,6 @@ def add_user_to_db(user):
     leaderboard = get_leaderboard(unordered_leader_board)
     # print("leaderboard", leaderboard)
     return leaderboard
-
-    
-
 @SOCKETIO.on("replay")
 def on_replay(data):
     """When replay event is recieved"""
@@ -151,7 +147,7 @@ def get_leaderboard(unordered_leader_board):
                key=lambda item: item[1],
                reverse=True))
 
-    #desc_ordered_list = json.dumps(desc_ordered_list, sort_keys=False)
+    desc_ordered_list = json.dumps(desc_ordered_list, sort_keys=False)
     # for  unit testing mocked or unmocked please comment the above line
     return desc_ordered_list
 
@@ -159,12 +155,8 @@ def get_leaderboard(unordered_leader_board):
 #function to update the score of player based on if he is the winner or looser.
 def update_score(username, players):
     """update the score of players"""
-    player_x = DB.session.query(
-        models.Players).filter_by(username=players[0]).first(
-        )  #player withe user name of playerX from database.
-    player_o = DB.session.query(
-        models.Players).filter_by(username=players[1]).first(
-        )  #player withe user name of playerO from database.
+    player_x = get_player(players, 0)  #player withe user name of playerX from database.
+    player_o = get_player(players, 1) #player withe user name of playerO from database.
     if is_winner(player_x.username, username):
         #adding 1 point to the score of a playerX if
         #it's user name matches with the username of winner
@@ -183,7 +175,15 @@ def update_score(username, players):
         player_o.score -= 1
         DB.session.commit()
 
-
+def get_player(players, i):
+    """ Get the player from database"""
+    player = helper_player(players, i)
+    return player
+def helper_player(players, idx):
+    """helper function"""
+    return DB.session.query(
+        models.Players).filter_by(username=players[idx]).first(
+        )
 def is_winner(db_username, data_username):
     """Check if the player is winnner or not"""
     if db_username == data_username:
