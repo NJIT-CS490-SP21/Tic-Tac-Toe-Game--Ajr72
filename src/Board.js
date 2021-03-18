@@ -63,25 +63,53 @@ export function Board() {
   // function to setnext move
 
   function setNextMoove(muserType) {
-    if (muserType === 'playerX') {
-      setMove((prevMove) => 'X');
-    } else if (muserType === 'playerO') {
-      setMove((prevMove) => 'O');
+    if (muserType === 'PlayerX') {
+      setMove((prevMove) => {
+        let tempMove = prevMove;
+        tempMove = 'X';
+        return tempMove;
+      });
+    } else if (muserType === 'PlayerO') {
+      setMove((prevMove) => {
+        let tempMove = prevMove;
+        tempMove = 'O';
+        return tempMove;
+      });
     }
   }
   // function to set user type
   function setUserType(uid) {
     if (uid === 1) {
       // if id is one than it is playerX
-      setType((prevType) => 'PlayerX');
-      setMove((prevMove) => 'X');
+      setType((prevType) => {
+        let tempType = prevType;
+        tempType = 'PlayerX';
+        return tempType;
+      });
+      setMove((prevMove) => {
+        let tempMove = prevMove;
+        tempMove = 'X';
+        return tempMove;
+      });
     } else if (uid === 2) {
       // if id is 2 then the user is player
-      setType((prevType) => 'PlayerO');
-      setMove((prevMove) => 'O');
+      setType((prevType) => {
+        let tempType = prevType;
+        tempType = 'PlayerO';
+        return tempType;
+      });
+      setMove((prevMove) => {
+        let tempMove = prevMove;
+        tempMove = 'O';
+        return tempMove;
+      });
     } else {
       // else user is the spectator
-      setType((prevType) => 'Spectator');
+      setType((prevType) => {
+        let tempType = prevType;
+        tempType = 'Spectator';
+        return tempType;
+      });
     }
   }
 
@@ -109,11 +137,19 @@ export function Board() {
             if (boardCopy[index] === 'X') {
               // if playerX player setting next turn to plyerO and adding sound effect
               xsound.play();
-              setNextTurn((prevTurn) => 'PlayerO');
+              setNextTurn((prevTurn) => {
+                let tempTurn = prevTurn;
+                tempTurn = 'PlayerO';
+                return tempTurn;
+              });
             } else {
               // if playerO player setting next turn to plyerX and adding sound effect
               osound.play();
-              setNextTurn((prevTurn) => 'PlayerX');
+              setNextTurn((prevTurn) => {
+                let tempTurn = prevTurn;
+                tempTurn = 'PlayerX';
+                return tempTurn;
+              });
             }
 
             if (userType === 'PlayerX' || userType === 'PlayerO') {
@@ -147,12 +183,20 @@ export function Board() {
   function onPressLogin() {
     if (inputRef != null) {
       // user can loging only when user have enter someting
-      setLogin((prevIsLogin) => true); // setting the login state to true
+      setLogin((prevIsLogin) => {
+        let tempLogin = prevIsLogin;
+        tempLogin = true;
+        return tempLogin;
+      }); // setting the login state to true
       setId((prevId) => prevId + 1); // updating  the couter
       let username = inputRef.current.value; // setting username to the inputRef.
 
       username = inputRef.current.value;
-      setName((prevName) => username); // setting name for current browser
+      setName((prevName) => {
+        let tempName = prevName;
+        tempName = username;
+        return tempName;
+      }); // setting name for current browser
       addUser(id, username); // adding user to player list or
       // spectator list based on their id number
       setUserType(id); // seting the usertype for the user
@@ -169,16 +213,28 @@ export function Board() {
       return boardCopy;
     });
     winner = null;
-    setNextTurn((prevTurn) => 'PlayerX');
+    setNextTurn((prevTurn) => {
+      let tempTurn = prevTurn;
+      tempTurn = 'PlayerX';
+      return tempTurn;
+    });
     // console.log('relayed', board);
     socket.emit('replay', { board, winner, nextTurn });
   }
   // function when user press button to see the leader board
   function onPressLeader() {
     if (leader === false) {
-      setLeader((prevLeader) => true);
+      setLeader((prevLeader) => {
+        let tempLeader = prevLeader;
+        tempLeader = true;
+        return tempLeader;
+      });
     } else {
-      setLeader((prevLeader) => false);
+      setLeader((prevLeader) => {
+        let tempLeader = prevLeader;
+        tempLeader = false;
+        return tempLeader;
+      });
     }
   }
 
@@ -196,9 +252,17 @@ export function Board() {
         boardCopy[data.index] = data.val;
 
         if (boardCopy[data.index] === 'X') {
-          setNextTurn((prevTurn) => 'PlayerO');
+          setNextTurn((prevTurn) => {
+            let tempTurn = prevTurn;
+            tempTurn = 'PlayerO';
+            return tempTurn;
+          });
         } else {
-          setNextTurn((prevTurn) => 'PlayerX');
+          setNextTurn((prevTurn) => {
+            let tempTurn = prevTurn;
+            tempTurn = 'PlayerX';
+            return tempTurn;
+          });
         }
 
         return boardCopy;
@@ -217,10 +281,14 @@ export function Board() {
         return tempId;
       });
       const uid = data.id;
-      const username = data.username;
+      const { username } = data;
       const uuserType = data.userType;
       // upddating the leader board
-      setLeaderBoard((prevLeaderBoard) => JSON.parse(data.leaderboard));
+      setLeaderBoard((prevLeaderBoard) => {
+        let tempLeaderboard = prevLeaderBoard;
+        tempLeaderboard = JSON.parse(data.leaderboard);
+        return tempLeaderboard;
+      });
       addUser(uid, username); // adding users to playerlist and spectatorlist
       setNextMoove(uuserType);
     });
@@ -231,15 +299,22 @@ export function Board() {
         boardCopy = ['', '', '', '', '', '', '', '', ''];
         return boardCopy;
       });
-      setNextTurn((prevTurn) => 'PlayerX');
+      setNextTurn((prevTurn) => {
+        let tempTurn = prevTurn;
+        tempTurn = 'PlayerX';
+        return tempTurn;
+      });
       winner = data.winner;
     });
 
     // updating leaderboard when there is a winner
     socket.on('winner', (data) => {
       //  console.log('winner data', data);
-      const leaderboard = data.leaderboard;
-      setLeaderBoard((prevLeaderBoard) => JSON.parse(leaderboard));
+      setLeaderBoard((prevLeaderBoard) => {
+        let tempLeaderboard = prevLeaderBoard;
+        tempLeaderboard = JSON.parse(data.leaderboard);
+        return tempLeaderboard;
+      });
     });
   }, []);
 

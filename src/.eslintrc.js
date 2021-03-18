@@ -26,8 +26,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'consistent-return': 'off',
-    'no-unused-vars': 'off',
-    'prefer-destructuring': 'off',
+    
     'jsx-a11y/label-has-associated-control': [
       2,
       {
